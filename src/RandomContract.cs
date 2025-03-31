@@ -6,7 +6,7 @@ using AElf.Types;
 
 namespace AElf.Contracts.RandomContract;
 
-public class RandomContract : RandomContractContainer.RandomContractBase
+public partial class RandomContract : RandomContractContainer.RandomContractBase
 {
     // Initializes the contract
     public override Empty Initialize(InitializeInput input)
@@ -61,6 +61,8 @@ public class RandomContract : RandomContractContainer.RandomContractBase
     {
         // Check if the random number is already generated
         Assert(State.RandomNumbers[input.Hash] == null, "Random number already generated.");
+        // Check if the hash length is valid
+        Assert(input.Hash.Length <= MaxHashLength, "Invalid hash length.");
         // Check if the maxValue is valid
         Assert(input.MaxValue > 0 && input.MaxValue <= State.MaxValueLimit.Value, "Invalid max value.");
         // Check if the random number count is valid

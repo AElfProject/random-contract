@@ -224,6 +224,17 @@ public class RandomContractTests : TestBase
         result.TransactionResult.Status.ShouldBe(TransactionResultStatus.Failed);
         result.TransactionResult.Error.ShouldContain("Random number already generated");
         
+        var invalidHash = "cdd6b38b763d929355c47fb6f7be5107cdd6b38b763d929355c47fb6f7be5107cdd6b38b763d929355c47fb6f7be510712345";
+        // Generate random number with invalid hash length and expect an exception
+        result = await RandomContractStub.GenerateRandomNumber.SendWithExceptionAsync(new GenerateRandomNumberInput
+        {
+            Hash = invalidHash,
+            RandomNumberCount = randomNumberCount,
+            MaxValue = maxValue
+        });
+        result.TransactionResult.Status.ShouldBe(TransactionResultStatus.Failed);
+        result.TransactionResult.Error.ShouldContain("Invalid hash length");
+        
         hash = "OtherHash";
         // Generate random number with invalid max value and expect an exception
         result = await RandomContractStub.GenerateRandomNumber.SendWithExceptionAsync(new GenerateRandomNumberInput
