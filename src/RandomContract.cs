@@ -59,10 +59,14 @@ public class RandomContract : RandomContractContainer.RandomContractBase
     
     public override Empty GenerateRandomNumber(GenerateRandomNumberInput input)
     {
+        // Check if the random number is already generated
+        Assert(State.RandomNumbers[input.Hash] == null, "Random number already generated.");
         // Check if the maxValue is valid
         Assert(input.MaxValue > 0 && input.MaxValue <= State.MaxValueLimit.Value, "Invalid max value.");
         // Check if the random number count is valid
-        Assert(input.RandomNumberCount > 0 && input.RandomNumberCount <= State.MaxRandomNumberCount.Value, "Invalid random number count.");
+        Assert(
+            input.RandomNumberCount > 0 && input.RandomNumberCount <= State.MaxRandomNumberCount.Value &&
+            input.RandomNumberCount <= input.MaxValue, "Invalid random number count.");
         // Get a random hash and check if it is available
         var randomHash = State.ConsensusContract.GetRandomHash.Call(new Int64Value
         {

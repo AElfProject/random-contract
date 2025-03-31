@@ -186,6 +186,7 @@ public class RandomContractTests : TestBase
         // Generate 100 random number
         randomNumberCount = 10;
         maxValue = 100;
+        hash = "Test";
         result = await RandomContractStub.GenerateRandomNumber.SendAsync(new GenerateRandomNumberInput
         {
             Hash = hash,
@@ -213,6 +214,17 @@ public class RandomContractTests : TestBase
             randomSet.Add(randomNumber);
         }
         
+        // Generate random number with same hash and expect an exception
+        result = await RandomContractStub.GenerateRandomNumber.SendWithExceptionAsync(new GenerateRandomNumberInput
+        {
+            Hash = hash,
+            RandomNumberCount = randomNumberCount,
+            MaxValue = maxValue
+        });
+        result.TransactionResult.Status.ShouldBe(TransactionResultStatus.Failed);
+        result.TransactionResult.Error.ShouldContain("Random number already generated");
+        
+        hash = "OtherHash";
         // Generate random number with invalid max value and expect an exception
         result = await RandomContractStub.GenerateRandomNumber.SendWithExceptionAsync(new GenerateRandomNumberInput
         {
@@ -246,6 +258,15 @@ public class RandomContractTests : TestBase
         {
             Hash = hash,
             RandomNumberCount = maxRandomNumberCount + 1,
+            MaxValue = maxValueLimit
+        });
+        result.TransactionResult.Status.ShouldBe(TransactionResultStatus.Failed);
+        result.TransactionResult.Error.ShouldContain("Invalid random number count");
+        
+        result = await RandomContractStub.GenerateRandomNumber.SendWithExceptionAsync(new GenerateRandomNumberInput
+        {
+            Hash = hash,
+            RandomNumberCount = maxValue + 1,
             MaxValue = maxValue
         });
         result.TransactionResult.Status.ShouldBe(TransactionResultStatus.Failed);
