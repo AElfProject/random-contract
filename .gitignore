@@ -257,3 +257,7 @@ paket-files/
 CodeCoverage
 
 *.dll
+
+#contract
+contract_csharp_plugin
+contract_csharp_plugin-v1.0.3-linux.zip
