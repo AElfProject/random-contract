@@ -85,7 +85,7 @@ public partial class RandomContract : RandomContractContainer.RandomContractBase
         for (var i = 0; i < input.RandomNumberCount; i++)
         {
             var randomInt = Math.Abs(int.Parse(randomHash.ToHex().Substring(0, 8), System.Globalization.NumberStyles.HexNumber));
-            var randomNumber = randomInt % input.MaxValue;
+            var randomNumber = randomInt % input.MaxValue + 1;
             randomHash = HashHelper.XorAndCompute(seedHash, randomHash);
             if(randomNumbers.Contains(randomNumber))
             {
